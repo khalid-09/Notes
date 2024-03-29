@@ -1,5 +1,21 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import {
+  findNotes,
+  getAllNotes,
+  newNote,
+  removeAllNotes,
+  removeNote,
+} from './notes.js';
+
+const listNotes = notes => {
+  notes.forEach(({ id, content, tags }) => {
+    console.log('noteId : ', id);
+    console.log('noteContent : ', content);
+    console.log('noteTags : ', tags);
+    console.log('\n');
+  });
+};
 
 yargs(hideBin(process.argv))
   .command(
@@ -11,7 +27,11 @@ yargs(hideBin(process.argv))
         type: 'string',
       });
     },
-    async argv => {}
+    async argv => {
+      const tags = argv.tags ? argv.tags.split(',') : [];
+      const note = await newNote(argv.note, tags);
+      console.log('Note created:', note);
+    }
   )
   .option('tags', {
     alias: 't',
@@ -22,7 +42,14 @@ yargs(hideBin(process.argv))
     'all',
     'get all notes',
     () => {},
-    async argv => {}
+    async argv => {
+      const notes = await getAllNotes();
+      if (notes.length === 0) {
+        console.log('No notes found');
+        return;
+      }
+      listNotes(notes);
+    }
   )
   .command(
     'find <filter>',
@@ -34,7 +61,14 @@ yargs(hideBin(process.argv))
         type: 'string',
       });
     },
-    async argv => {}
+    async argv => {
+      const matches = await findNotes(argv.filter);
+      if (matches.length === 0) {
+        console.log('No notes found with the given filter');
+        return;
+      }
+      listNotes(matches);
+    }
   )
   .command(
     'remove <id>',
@@ -45,7 +79,14 @@ yargs(hideBin(process.argv))
         description: 'The id of the note you want to remove',
       });
     },
-    async argv => {}
+    async argv => {
+      const id = await removeNote(argv.id);
+      if (id) {
+        console.log('Note removed:', id);
+      } else {
+        console.log('Note not found');
+      }
+    }
   )
   .command(
     'web [port]',
@@ -63,7 +104,10 @@ yargs(hideBin(process.argv))
     'clean',
     'remove all notes',
     () => {},
-    async argv => {}
+    async argv => {
+      await removeAllNotes();
+      console.log('All notes removed');
+    }
   )
   .demandCommand(1)
   .parse();
