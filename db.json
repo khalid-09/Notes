@@ -1,3 +1,29 @@
 {
-  "notes": []
+  "notes": [
+    {
+      "content": "Hey hello Node.js",
+      "tags": [
+        "js",
+        "programming",
+        "backend"
+      ],
+      "id": 1711727549557
+    },
+    {
+      "content": "Hey how you doing",
+      "tags": [
+        "casual"
+      ],
+      "id": 1711727663729
+    },
+    {
+      "content": "Godzilla by Eminem",
+      "tags": [
+        "eminem",
+        "rap",
+        "hip-hop"
+      ],
+      "id": 1711727722322
+    }
+  ]
 }
